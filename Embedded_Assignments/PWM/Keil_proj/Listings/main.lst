@@ -1,0 +1,85 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              08/15/2021 16:52:19 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include<stdio.h>
+   3          #include<string.h>
+   4          #include "pwm.h"
+   5          
+   6          void delay_1ms(unsigned char duration);
+   7          void init_timer();
+   8          unsigned char duty_cycle=DEFAULT_DUTY_CYCLE;
+   9          
+  10          void main() {
+  11   1        
+  12   1        init_timer();
+  13   1        
+  14   1        while (1) {
+  15   2          
+  16   2          detect_menu_button_press();
+*** WARNING C206 IN LINE 16 OF main.c: 'detect_menu_button_press': missing function-prototype
+  17   2          
+  18   2        }
+  19   1      }
+  20          void init_timer()
+  21          {
+  22   1        TMOD=0x11;  //Timer 0 & Timer 1 in 16 bit timer mode
+  23   1        
+  24   1        /*Timer 0 as 10ms timer with timer_interrupt*/
+  25   1        /* TH0 & TL0 calculation =[0xFFFF-(10ms/1.085us)]*/
+  26   1          TH0 = 0XDB;
+  27   1          TL0 = 0XFF;
+  28   1          TF0 = 0;
+  29   1          TR0 = 1;
+  30   1          ET0=1;  // Timer 0 interrupt_enable
+  31   1          EA=1;   // global interrupt_enable
+  32   1        
+  33   1      }
+  34          
+  35          void Timer0_ISR() interrupt 1 /* Timer0 ISR */
+  36          {
+  37   1      
+  38   1        
+  39   1        PWM_OUT= 1;     /* Toggle port pin */
+  40   1        TH0 = 0xDB;       /* 10ms timer value */
+  41   1        TL0 = 0xFF;       
+  42   1        TF0=0;  //clear flag
+  43   1        delay_1ms(duty_cycle);
+  44   1        PWM_OUT= 0;     /* Toggle port pin */
+  45   1      
+  46   1      }
+  47          
+  48          void delay_1ms(unsigned char duration) {
+  49   1        unsigned char i;
+  50   1        for (i = 0; i < duration; i++) {
+  51   2          TH1 = 0XFC;
+  52   2          TL1 = 0X67;
+  53   2          TF1 = 0;
+C51 COMPILER V9.60.0.0   MAIN                                                              08/15/2021 16:52:19 PAGE 2   
+
+  54   2          TR1 = 1;
+  55   2          while (TF1 == 0);
+  56   2        }
+  57   1      }
+  58          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    123    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

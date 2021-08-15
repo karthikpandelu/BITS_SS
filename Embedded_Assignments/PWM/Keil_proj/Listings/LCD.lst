@@ -1,0 +1,86 @@
+C51 COMPILER V9.60.0.0   LCD                                                               08/15/2021 15:15:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN .\Objects\LCD.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE LCD.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\LCD.l
+                    -st) TABS(2) OBJECT(.\Objects\LCD.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include<stdio.h>
+   3          #include "LCD.h"
+   4          #include<string.h>
+   5          
+   6          #define LCDDATA P1
+   7          #define DELAY for(i=0;i<1200;i++)
+   8          
+   9          void LCD_initialise() {
+  10   1      
+  11   1        unsigned int i, j;
+  12   1      
+  13   1        int com[5] = { 0x38, 0x0C, 0x01, 0x06, 0x80 };
+  14   1        for (j = 0; j <= 4; j++) {
+  15   2          comwrt(com[j]);
+  16   2          DELAY;
+  17   2        }
+  18   1      
+  19   1      }
+  20          
+  21          void comwrt(unsigned char dat) {
+  22   1        unsigned int i;
+  23   1        LCDDATA = dat;
+  24   1        RS = 0;
+  25   1        RW = 0;
+  26   1        EN = 1;
+  27   1        DELAY;
+  28   1        EN = 0;
+  29   1      }
+  30          
+  31          void datawrt(unsigned char dat) {
+  32   1        unsigned int i;
+  33   1        LCDDATA = dat;
+  34   1        RS = 1;
+  35   1        RW = 0;
+  36   1        EN = 1;
+  37   1        DELAY;
+  38   1        EN = 0;
+  39   1      }
+  40          
+  41          void display(unsigned char *str) {
+  42   1        int i;
+  43   1        for (; *str != 0; str++) {
+  44   2          datawrt(*str);
+  45   2          DELAY;
+  46   2      
+  47   2        }
+  48   1      }
+  49          
+  50          void disp_bdc(unsigned char bcd) {
+  51   1        datawrt(convup(bcd));
+  52   1        datawrt(convd(bcd));
+  53   1      }
+  54          unsigned char convup(unsigned char bcd) {
+C51 COMPILER V9.60.0.0   LCD                                                               08/15/2021 15:15:37 PAGE 2   
+
+  55   1        return ((bcd >> 4) + 48);
+  56   1      }
+  57          unsigned char convd(unsigned char bcd) {
+  58   1        return ((bcd & 0x0F) + 48);
+  59   1      }
+  60          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    183    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

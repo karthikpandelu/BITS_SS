@@ -1,0 +1,74 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              08/15/2021 15:15:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include<stdio.h>
+   3          #include "LCD.h"
+   4          #include "i2c.h"
+   5          #include "utils.h"
+   6          #include<string.h>
+   7          
+   8          void delay_50ms(unsigned char duration);
+   9          rtc_t rtc_time;
+  10          
+  11          void main() {
+  12   1        LCD_initialise();
+  13   1      
+  14   1        while (1) {
+  15   2          RTC_read_time(&rtc_time);
+  16   2      
+  17   2          comwrt(0x80);
+  18   2          disp_bdc(rtc_time.hour);
+  19   2          datawrt(':');
+  20   2          disp_bdc(rtc_time.min);
+  21   2          datawrt(':');
+  22   2          disp_bdc(rtc_time.sec);
+  23   2          datawrt(' ');
+  24   2          comwrt(0xC0);
+  25   2      
+  26   2          disp_bdc(rtc_time.date);
+  27   2          datawrt('/');
+  28   2          disp_bdc(rtc_time.month);
+  29   2          datawrt('/');
+  30   2          disp_bdc(rtc_time.year);
+  31   2      
+  32   2          detect_menu_button_press(); // settings menu 
+  33   2      
+  34   2          delay_50ms(20); // 1sec delay
+  35   2        }
+  36   1      }
+  37          
+  38          void delay_50ms(unsigned char duration) {
+  39   1        unsigned char i;
+  40   1        for (i = 0; i < duration; i++) {
+  41   2          TH0 = 0X4B;
+  42   2          TL0 = 0XFD;
+  43   2          TF0 = 0;
+  44   2          TR0 = 1;
+  45   2          while (TF0 == 0);
+  46   2        }
+  47   1      }
+  48          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    111    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.0.0   MAIN                                                              08/15/2021 15:15:37 PAGE 2   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

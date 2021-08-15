@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\utils.obj",
+".\Objects\i2c.obj",
+".\Objects\LCD.obj" 
+TO ".\Objects\RTC" 
+PRINT(".\Listings\RTC.m51")
